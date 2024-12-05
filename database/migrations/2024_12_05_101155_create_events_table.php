@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->timestamp('start_time')->default(now());
-            $table->timestamp('asdfg')->default(now());
+            $table->dateTime('start_time');
+            $table->dateTime('end_time');
             $table->string('location');
             $table->timestamps();
         });
