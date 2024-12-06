@@ -17,7 +17,6 @@
 	"forwardPorts": [
 		8000, // PHP / Laravel
 		5173, // Vite
-		9000, // Xdebug
 		3306  // MariaDB
 	],
 
@@ -28,7 +27,9 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"onecentlin.laravel-extension-pack"
+				"onecentlin.laravel-extension-pack",
+				"mtxr.sqltools",
+				"mtxr.sqltools-driver-mysql"
 			]
 		}
 	}

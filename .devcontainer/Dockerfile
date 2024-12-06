@@ -8,7 +8,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 # Install php-mysql driver
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 
-# Install and enable PHP extensions required for Laravel and FilamentPHP
+# Install and enable PHP extensions
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get install -y \
     libzip-dev \
@@ -20,6 +20,9 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd zip mbstring exif pcntl bcmath intl opcache soap \
     && apt-get clean -y && rm -rf /var/lib/apt/lists/*
+
+# Disable Xdebug
+RUN rm /usr/local/etc/php/conf.d/xdebug.ini
 
 # [Optional] Uncomment this section to install additional OS packages.
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
