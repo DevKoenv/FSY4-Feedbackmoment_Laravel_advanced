@@ -1,5 +1,5 @@
 <?php
-namespace App\Livewire;
+namespace App\Livewire\Events;
 
 use App\Models\Event;
 use Livewire\Component;
@@ -8,7 +8,7 @@ use Livewire\Attributes\Layout;
 use Carbon\Carbon;
 
 #[Layout('layouts.app')]
-class Events extends Component
+class Index extends Component
 {
     use WithPagination;
 
@@ -22,8 +22,8 @@ class Events extends Component
 
     public function render()
     {
-        return view('livewire.events', [
-            'events' => Event::with('attendees')->paginate(10)
+        return view('livewire.events.index', [
+            'events' => Event::withCount('attendees')->paginate(10)
         ]);
     }
 
