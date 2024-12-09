@@ -16,57 +16,54 @@
                         </x-primary-button>
                     </div>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm text-left">
-                            <thead class="text-xs uppercase bg-gray-50 dark:bg-gray-700">
-                                <tr class="whitespace-nowrap">
-                                    <th scope="col" class="px-6 py-3">Title</th>
-                                    {{-- <th scope="col" class="px-6 py-3">Description</th> --}}
-                                    <th scope="col" class="px-6 py-3">Start Time</th>
-                                    {{-- <th scope="col" class="px-6 py-3">End Time</th> --}}
-                                    <th scope="col" class="px-6 py-3">Duration</th>
-                                    <th scope="col" class="px-6 py-3">Location</th>
-                                    <th scope="col" class="px-6 py-3" align="right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($events as $event)
-                                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                        <td class="px-6 py-4">{{ $event->title }}</td>
-                                        {{-- <td class="px-6 py-4">{{ Str::limit($event->description, 50) }}</td> --}}
-                                        <td class="px-6 py-4">{{ $event->start_time->format('Y-m-d H:i') }}</td>
-                                        {{-- <td class="px-6 py-4">{{ $event->end_time->format('Y-m-d H:i') }}</td> --}}
-                                        <td class="px-6 py-4">
-                                            {{ $event->start_time->diffForHumans($event->end_time, true) }}</td>
-
-                                        <td class="px-6 py-4">{{ $event->location }}</td>
-
-                                        <td class="px-6 py-4" align="right">
-                                            <div class="w-fit flex gap-2">
+                    <div class="mt-8 flow-root">
+                        <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                            <div class="inline-block min-w-full py-2 align-middle">
+                                <table class="min-w-full divide-y divide-gray-300 dark:divide-gray-700">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold">Title</th>
+                                            <th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold sm:table-cell">Start Time</th>
+                                            <th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold md:table-cell">Duration</th>
+                                            <th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold lg:table-cell">Location</th>
+                                            <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                                                <span class="sr-only">Actions</span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                        @foreach ($events as $event)
+                                        <tr>
+                                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm">
+                                                <div class="font-medium">{{ $event->title }}</div>
+                                                <!-- Mobile-only content -->
+                                                <div class="mt-1 sm:hidden">
+                                                    <div class="text-gray-500">{{ $event->start_time->format('Y-m-d H:i') }}</div>
+                                                    <div class="text-gray-500">{{ $event->location }}</div>
+                                                </div>
+                                            </td>
+                                            <td class="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">
+                                                {{ $event->start_time->format('Y-m-d H:i') }}
+                                            </td>
+                                            <td class="hidden px-3 py-4 text-sm text-gray-500 md:table-cell">
+                                                {{ $event->start_time->diffForHumans($event->end_time, true) }}
+                                            </td>
+                                            <td class="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">
+                                                {{ $event->location }}
+                                            </td>
+                                            <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                                 <button wire:click="edit({{ $event->id }})"
                                                     x-on:click="$dispatch('open-modal', 'event-modal')"
-                                                    class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                                                    class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">
                                                     <i class="fas fa-edit"></i>
+                                                    <span class="sr-only">Edit event</span>
                                                 </button>
-
-                                                <a href="{{ route('events.attendees', $event) }}" wire:navigate
-                                                    class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
-                                                    <i class="fas fa-users"></i>
-                                                </a>
-
-                                                <button wire:click="confirmDelete({{ $event->id }})"
-                                                    x-on:click="$dispatch('open-modal', 'delete-confirmation')"
-                                                    class="text-red-500 hover:text-red-700">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        <div class="mt-4">
-                            {{ $events->links() }}
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
