@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('Attendees for: ') }} {{ $event->title }}
             </h2>
-            <x-secondary-button href="{{ route('events') }}" wire:navigate>
+            <x-secondary-button href="{{ route('events.index') }}" wire:navigate>
                 Back to Events
             </x-secondary-button>
         </div>
