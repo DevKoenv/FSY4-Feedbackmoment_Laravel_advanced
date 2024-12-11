@@ -18,7 +18,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('events')->name('events.')->group(function () {
         Route::get('/', Events::class)->name('index')->can('viewAny', Event::class);
-        Route::get('/{event}/attendees', Attendees::class)->name('attendees')->can('view', Attendee::class);
+        Route::get('/{event}/attendees', Attendees::class)->name('attendees')->can('viewAny', Attendee::class);
     });
 
     Route::get('/users', Users::class)->name('users')->can('viewAny', User::class);
