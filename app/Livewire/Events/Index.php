@@ -6,11 +6,12 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Layout;
 use Carbon\Carbon;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 #[Layout('layouts.app')]
 class Index extends Component
 {
-    use WithPagination;
+    use WithPagination, AuthorizesRequests;
 
     public $title;
     public $description;
@@ -29,8 +30,8 @@ class Index extends Component
 
     public function create()
     {
+        $this->authorize('create', Event::class);
         $this->resetInputFields();
-
         $this->dispatch('open-modal', 'event-modal');
     }
 
@@ -46,6 +47,8 @@ class Index extends Component
 
     public function store()
     {
+        $this->authorize('create', Event::class);
+
         $this->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -63,7 +66,6 @@ class Index extends Component
         ]);
 
         session()->flash('success', 'Event created successfully.');
-
         $this->dispatch('close-modal', 'event-modal');
         $this->resetInputFields();
     }
@@ -71,6 +73,8 @@ class Index extends Component
     public function edit($id)
     {
         $event = Event::findOrFail($id);
+        $this->authorize('update', $event);
+
         $this->event_id = $id;
         $this->title = $event->title;
         $this->description = $event->description;
@@ -93,7 +97,9 @@ class Index extends Component
         ]);
 
         if ($this->event_id) {
-            $event = Event::find($this->event_id);
+            $event = Event::findOrFail($this->event_id);
+            $this->authorize('update', $event);
+
             $event->update([
                 'title' => $this->title,
                 'description' => $this->description,
@@ -101,8 +107,8 @@ class Index extends Component
                 'end_time' => $this->end_time,
                 'location' => $this->location,
             ]);
-            session()->flash('success', 'Event updated successfully.');
 
+            session()->flash('success', 'Event updated successfully.');
             $this->dispatch('close-modal', 'event-modal');
             $this->resetInputFields();
         }
@@ -117,7 +123,10 @@ class Index extends Component
     public function delete()
     {
         if ($this->eventToDelete) {
-            Event::find($this->eventToDelete)->delete();
+            $event = Event::findOrFail($this->eventToDelete);
+            $this->authorize('delete', $event);
+
+            $event->delete();
             session()->flash('success', 'Event deleted successfully.');
             $this->eventToDelete = null;
             $this->dispatch('close-modal', 'delete-confirmation');

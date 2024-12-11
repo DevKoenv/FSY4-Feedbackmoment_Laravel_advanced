@@ -11,9 +11,11 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <div class="flex justify-between mb-6">
                         <h2 class="text-2xl font-semibold">Manage Events</h2>
-                        <x-primary-button wire:click="create" x-on:click="$dispatch('open-modal', 'event-modal')">
-                            Create Event
-                        </x-primary-button>
+                        @can('create', 'App\\Models\Event')
+                            <x-primary-button wire:click="create" x-on:click="$dispatch('open-modal', 'event-modal')">
+                                Create Event
+                            </x-primary-button>
+                        @endcan
                     </div>
 
                     <div class="mt-8">
@@ -43,7 +45,8 @@
                                             <td
                                                 class="w-full max-w-0 py-4 pl-2 pr-2 text-sm font-medium sm:w-auto sm:max-w-none sm:pl-6">
                                                 <div class="truncate hover:text-clip" title="{{ $event->title }}">
-                                                    {{ $event->title }}</div>
+                                                    {{ $event->title }}
+                                                </div>
                                                 <dl class="font-normal sm:hidden">
                                                     <dt class="sr-only">Start Time</dt>
                                                     <dd class="mt-1 truncate text-gray-500">
@@ -64,20 +67,24 @@
                                                 {{ $event->location }}</td>
                                             <td class="py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                                 <div class="flex justify-end space-x-2">
-                                                    <button wire:click="edit({{ $event->id }})"
-                                                        x-on:click="$dispatch('open-modal', 'event-modal')"
-                                                        class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
                                                     <a href="{{ route('events.attendees', $event) }}"
                                                         class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">
                                                         <i class="fas fa-users"></i>
                                                     </a>
-                                                    <button wire:click="confirmDelete({{ $event->id }})"
-                                                        x-on:click="$dispatch('open-modal', 'confirm-event-deletion')"
-                                                        class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
+                                                    @can('update', $event)
+                                                        <button wire:click="edit({{ $event->id }})"
+                                                            x-on:click="$dispatch('open-modal', 'event-modal')"
+                                                            class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                    @endcan
+                                                    @can('delete', $event)
+                                                        <button wire:click="confirmDelete({{ $event->id }})"
+                                                            x-on:click="$dispatch('open-modal', 'confirm-event-deletion')"
+                                                            class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    @endcan
                                                 </div>
                                             </td>
                                         </tr>
@@ -86,7 +93,7 @@
                             </table>
                         </div>
                         <div class="mt-4">
-                            {{ $events->links() }}
+                            {{ $events->links('vendor.pagination.tailwind') }}
                         </div>
                     </div>
                 </div>

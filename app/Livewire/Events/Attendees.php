@@ -7,12 +7,12 @@ use App\Models\Event;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Layout;
-use Carbon\Carbon;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 #[Layout('layouts.app')]
 class Attendees extends Component
 {
-    use WithPagination;
+    use WithPagination, AuthorizesRequests;
 
     public Event $event;
     public $name;
@@ -35,6 +35,7 @@ class Attendees extends Component
 
     public function create()
     {
+        $this->authorize('create', Attendee::class);
         $this->resetInputFields();
         $this->dispatch('open-modal', 'attendee-modal');
     }
@@ -49,6 +50,8 @@ class Attendees extends Component
 
     public function store()
     {
+        $this->authorize('create', Attendee::class);
+
         $this->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
@@ -67,6 +70,8 @@ class Attendees extends Component
     public function edit($id)
     {
         $attendee = $this->event->attendees()->findOrFail($id);
+        $this->authorize('update', $attendee);
+
         $this->attendee_id = $id;
         $this->name = $attendee->name;
         $this->email = $attendee->email;
@@ -84,6 +89,8 @@ class Attendees extends Component
 
         if ($this->attendee_id) {
             $attendee = $this->event->attendees()->findOrFail($this->attendee_id);
+            $this->authorize('update', $attendee);
+
             $attendee->update([
                 'name' => $this->name,
                 'email' => $this->email,
@@ -104,7 +111,10 @@ class Attendees extends Component
     public function delete()
     {
         if ($this->attendeeToDelete) {
-            Attendee::find($this->attendeeToDelete)->delete();
+            $attendee = Attendee::findOrFail($this->attendeeToDelete);
+            $this->authorize('delete', $attendee);
+
+            $attendee->delete();
             session()->flash('success', 'Attendee deleted successfully.');
             $this->attendeeToDelete = null;
             $this->dispatch('close-modal', 'delete-confirmation');
